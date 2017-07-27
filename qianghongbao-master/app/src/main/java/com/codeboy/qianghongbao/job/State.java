@@ -1,6 +1,8 @@
-package com.codeboy.qianghongbao.state;
+package com.codeboy.qianghongbao.job;
 
 import android.view.accessibility.AccessibilityEvent;
+
+import com.codeboy.qianghongbao.job.IStateContext;
 
 /**
  * Created by sjb on 2017/7/26.
@@ -8,11 +10,11 @@ import android.view.accessibility.AccessibilityEvent;
 
 public abstract class State {
 
-    private Context context;
+    private IStateContext stateContext;
 
-    public State(Context ctx)
+    public State(IStateContext ctx)
     {
-        this.context=ctx;
+        this.stateContext=ctx;
     }
 
     public abstract  void handleEvent(AccessibilityEvent event);

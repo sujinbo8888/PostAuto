@@ -13,10 +13,16 @@ import com.codeboy.qianghongbao.QiangHongBaoService;
  * @author LeonLee
  */
 public interface AccessbilityJob {
+
     String getTargetPackageName();
+
     void onCreateJob(QiangHongBaoService service);
+
     void onReceiveJob(AccessibilityEvent event);
+
     void onStopJob();
+
     void onNotificationPosted(IStatusBarNotification service);
+
     boolean isEnable();
 }

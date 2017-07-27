@@ -1,4 +1,4 @@
-package com.codeboy.qianghongbao.job;
+package com.codeboy.qianghongbao.wy;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -21,6 +21,7 @@ import com.codeboy.qianghongbao.BuildConfig;
 import com.codeboy.qianghongbao.Config;
 import com.codeboy.qianghongbao.IStatusBarNotification;
 import com.codeboy.qianghongbao.QiangHongBaoService;
+import com.codeboy.qianghongbao.job.BaseAccessbilityJob;
 import com.codeboy.qianghongbao.util.AccessibilityHelper;
 import com.codeboy.qianghongbao.util.NotifyHelper;
 
@@ -33,15 +34,13 @@ import java.util.List;
  *
  * @author sujinbo
  */
-public class WhwpAccessbilityJob extends BaseAccessbilityJob {
+public class WYAccessbilityJob extends BaseAccessbilityJob {
 
-    private static final String TAG = "WechatAccessbilityJob";
+    private static final String TAG = "WYAccessbilityJob";
 
     /** app的包名*/
     public static final String PACKAGENAME = "com.netease.newsreader.activity";
 
-    /** 红包消息的关键字*/
-    private static final String HONGBAO_TEXT_KEY = "[微信红包]";
 
     private static final String BUTTON_CLASS_NAME = "android.widget.Button";
 
@@ -49,13 +48,7 @@ public class WhwpAccessbilityJob extends BaseAccessbilityJob {
     /** 不能再使用文字匹配的最小版本号 */
     private static final int USE_ID_MIN_VERSION = 700;// 6.3.8 对应code为680,6.3.9对应code为700
 
-    private static final int WINDOW_NONE = 0;
-    private static final int WINDOW_LUCKYMONEY_RECEIVEUI = 1;
-    private static final int WINDOW_LUCKYMONEY_DETAIL = 2;
-    private static final int WINDOW_LAUNCHER = 3;
-    private static final int WINDOW_OTHER = -1;
 
-    private int mCurrentWindow = WINDOW_NONE;
 
     private boolean isReceivingHongbao;
     private PackageInfo mAppPackageInfo = null;
@@ -266,71 +259,7 @@ public class WhwpAccessbilityJob extends BaseAccessbilityJob {
 
         return;
 
-/*
 
-        int event = getConfig().getWechatAfterOpenHongBaoEvent();
-        int wechatVersion = getAppVersion();
-        if(event == Config.WX_AFTER_OPEN_HONGBAO) { //拆红包
-            if (wechatVersion < USE_ID_MIN_VERSION) {
-                targetNode = AccessibilityHelper.findNodeInfosByText(nodeInfo, "拆红包");
-            } else {
-                String buttonId = "com.tencent.mm:id/b43";
-
-                if(wechatVersion == 700) {
-                    buttonId = "com.tencent.mm:id/b2c";
-                }
-
-                if(buttonId != null) {
-                    targetNode = AccessibilityHelper.findNodeInfosById(nodeInfo, buttonId);
-                }
-
-                if(targetNode == null) {
-                    //分别对应固定金额的红包 拼手气红包
-                    AccessibilityNodeInfo textNode = AccessibilityHelper.findNodeInfosByTexts(nodeInfo, "发了一个红包", "给你发了一个红包", "发了一个红包，金额随机");
-
-                    if(textNode != null) {
-                        for (int i = 0; i < textNode.getChildCount(); i++) {
-                            AccessibilityNodeInfo node = textNode.getChild(i);
-                            if (BUTTON_CLASS_NAME.equals(node.getClassName())) {
-                                targetNode = node;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if(targetNode == null) { //通过组件查找
-                    targetNode = AccessibilityHelper.findNodeInfosByClassName(nodeInfo, BUTTON_CLASS_NAME);
-                }
-            }
-        } else if(event == Config.WX_AFTER_OPEN_SEE) { //看一看
-            if(getAppVersion() < USE_ID_MIN_VERSION) { //低版本才有 看大家手气的功能
-                targetNode = AccessibilityHelper.findNodeInfosByText(nodeInfo, "看看大家的手气");
-            }
-        } else if(event == Config.WX_AFTER_OPEN_NONE) {
-            return;
-        }
-
-        if(targetNode != null) {
-            final AccessibilityNodeInfo n = targetNode;
-            long sDelayTime = getConfig().getWechatOpenDelayTime();
-            if(sDelayTime != 0) {
-                getHandler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        AccessibilityHelper.performClick(n);
-                    }
-                }, sDelayTime);
-            } else {
-                AccessibilityHelper.performClick(n);
-            }
-            if(event == Config.WX_AFTER_OPEN_HONGBAO) {
-                QHBApplication.eventStatistics(getContext(), "open_hongbao");
-            } else {
-                QHBApplication.eventStatistics(getContext(), "open_see");
-            }
-        }
-        */
     }
 
     /**

@@ -12,7 +12,6 @@ import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
 import com.codeboy.qianghongbao.job.AccessbilityJob;
-import com.codeboy.qianghongbao.job.WhwpAccessbilityJob;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,13 +23,14 @@ import java.util.List;
  * <p><a href="mailto:codeboy2013@163.com">Email:codeboy2013@163.com</a></p>
  *
  * 抢红包外挂服务
+ *
  */
 public class QiangHongBaoService extends AccessibilityService {
 
     private static final String TAG = "QiangHongBao";
 
     private static final Class[] ACCESSBILITY_JOBS= {
-            WhwpAccessbilityJob.class,
+            WYManager.class,
     };
 
     private static QiangHongBaoService service;
