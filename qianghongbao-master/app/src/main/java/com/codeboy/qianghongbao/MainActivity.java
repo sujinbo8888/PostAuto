@@ -84,7 +84,7 @@ public class MainActivity extends BaseSettingsActivity {
                 Intent intent = new Intent();
 
                 //intent.setData(Uri.parse("qqnews://article_9527?nm=20170724A08FSY00&chlid=news_news_top&type=1&articletype=0&iscomment=1&from=mobileQQPush&pagetype=mqqsharenews&extinfo=uin%3Do2030096221"));
-                intent.setData(Uri.parse("newsapp://doc/CQ1TM9SF000189FH?s=sps_article"));
+                intent.setData(Uri.parse("newsapp://doc/CQCJU8Q300018AOQ?s=sps_article"));
                 startActivity(intent);
             }
         });

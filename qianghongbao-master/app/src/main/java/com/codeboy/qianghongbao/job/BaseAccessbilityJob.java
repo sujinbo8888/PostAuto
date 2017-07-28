@@ -44,7 +44,7 @@ public abstract class BaseAccessbilityJob implements AccessbilityJob,IStateConte
     public void SetState(State state)
     {
         this.state=state;
-        this.state.doJob();
+        //this.state.doJob();
     }
 
     @Override

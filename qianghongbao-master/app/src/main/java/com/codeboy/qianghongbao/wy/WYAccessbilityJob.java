@@ -75,6 +75,8 @@ public class WYAccessbilityJob extends BaseAccessbilityJob {
         filter.addAction("android.intent.action.PACKAGE_REMOVED");
 
         getContext().registerReceiver(broadcastReceiver, filter);
+
+        this.SetState(new NewsMainState(this));
     }
 
     @Override
@@ -120,14 +122,10 @@ public class WYAccessbilityJob extends BaseAccessbilityJob {
                 notificationEvent(text, (Notification) data);
             }
         } else if(eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            handleNav(event);
+           // handleNav(event);
+            state.handleEvent(event);
         } else if(eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
-            if(mCurrentWindow != WINDOW_LAUNCHER) { //不在聊天界面或聊天列表，不处理
-                return;
-            }
-            if(isReceivingHongbao) {
-                handleChatListHongBao();
-            }
+            state.handleEvent(event);
         }
     }
 
@@ -191,7 +189,7 @@ public class WYAccessbilityJob extends BaseAccessbilityJob {
             text = text.substring(index + 1);
         }
         text = text.trim();
-        if(text.contains(HONGBAO_TEXT_KEY)) { //红包消息
+        if(text.contains("")) { //红包消息
             newHongBaoNotification(nf);
         }
     }
@@ -218,21 +216,18 @@ public class WYAccessbilityJob extends BaseAccessbilityJob {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void handleNav(AccessibilityEvent event) {
         if("com.netease.nr.phone.main.MainActivity".equals(event.getClassName())) {
-            mCurrentWindow = WINDOW_LUCKYMONEY_RECEIVEUI;
 
-            handleClickMe();
         } else if("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyDetailUI".equals(event.getClassName())) {
-            mCurrentWindow = WINDOW_LUCKYMONEY_DETAIL;
+
             //拆完红包后看详细的纪录界面
             if(getConfig().getWechatAfterGetHongBaoEvent() == Config.WX_AFTER_GET_GOHOME) { //返回主界面，以便收到下一次的红包通知
                 AccessibilityHelper.performHome(getService());
             }
         } else if("com.tencent.mm.ui.LauncherUI".equals(event.getClassName())) {
-            mCurrentWindow = WINDOW_LAUNCHER;
-            //在聊天界面,去点中红包
+
             handleChatListHongBao();
         } else {
-            mCurrentWindow = WINDOW_OTHER;
+
         }
     }
 

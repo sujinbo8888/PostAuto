@@ -1,7 +1,12 @@
 package com.codeboy.qianghongbao.util;
 
 import android.accessibilityservice.AccessibilityService;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Build;
+
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -133,8 +138,39 @@ public final class AccessibilityHelper {
         }
         if(nodeInfo.isClickable()) {
             nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+
         } else {
             performClick(nodeInfo.getParent());
         }
+    }
+
+    /** 点击事件*/
+    public static void performSetText(AccessibilityNodeInfo nodeInfo,String text) {
+        if(nodeInfo == null) {
+            return;
+        }
+
+            Bundle arguments = new Bundle();
+            arguments.putCharSequence(AccessibilityNodeInfo
+                    .ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
+            nodeInfo.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
+
+    }
+
+    public static void performSetTextPast(Context ctx,AccessibilityNodeInfo nodeInfo,String text)
+    {
+        if(nodeInfo == null) {
+            return;
+        }
+
+        performClick(nodeInfo);
+
+        ClipboardManager clipboard = (ClipboardManager)ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("text", text);
+        clipboard.setPrimaryClip(clip);
+
+        nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+
+        nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
     }
 }

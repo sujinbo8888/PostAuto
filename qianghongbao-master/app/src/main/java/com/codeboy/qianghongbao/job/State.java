@@ -12,6 +12,8 @@ public abstract class State {
 
     private IStateContext stateContext;
 
+    public IStateContext getStateContext(){return stateContext;}
+
     public State(IStateContext ctx)
     {
         this.stateContext=ctx;

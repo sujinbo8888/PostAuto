@@ -12,6 +12,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
 import com.codeboy.qianghongbao.job.AccessbilityJob;
+import com.codeboy.qianghongbao.wy.WYAccessbilityJob;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class QiangHongBaoService extends AccessibilityService {
     private static final String TAG = "QiangHongBao";
 
     private static final Class[] ACCESSBILITY_JOBS= {
-            WYManager.class,
+            WYAccessbilityJob.class,
     };
 
     private static QiangHongBaoService service;
