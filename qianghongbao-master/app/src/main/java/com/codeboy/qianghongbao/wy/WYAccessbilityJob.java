@@ -76,7 +76,7 @@ public class WYAccessbilityJob extends BaseAccessbilityJob {
 
         getContext().registerReceiver(broadcastReceiver, filter);
 
-        this.SetState(new NewsMainState(this));
+        this.SetState(new NewsMainState());
     }
 
     @Override
@@ -109,6 +109,7 @@ public class WYAccessbilityJob extends BaseAccessbilityJob {
         final int eventType = event.getEventType();
         //通知栏事件
         if(eventType == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
+            /*
             Parcelable data = event.getParcelableData();
             if(data == null || !(data instanceof Notification)) {
                 return;
@@ -121,6 +122,8 @@ public class WYAccessbilityJob extends BaseAccessbilityJob {
                 String text = String.valueOf(texts.get(0));
                 notificationEvent(text, (Notification) data);
             }
+            */
+            state.handleEvent(event);
         } else if(eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
            // handleNav(event);
             state.handleEvent(event);

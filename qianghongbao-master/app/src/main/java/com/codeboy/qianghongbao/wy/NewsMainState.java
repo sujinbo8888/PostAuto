@@ -14,19 +14,28 @@ import com.codeboy.qianghongbao.util.AccessibilityHelper;
 
 public class NewsMainState extends State {
 
-    private boolean isIntialized=false;
+    private final String TAG=NewsMainState.class.getName();
 
-    public NewsMainState(IStateContext ctx)
+
+    private static final Class[] NEXT_STATES= {
+            CommentState.class,
+    };
+
+
+    @Override
+    public Class[] getNextStates()
     {
-        super(ctx);
+        return NEXT_STATES;
     }
 
-    public boolean isCurrentState(AccessibilityEvent event) {
-        Log.w("NewsMainState", "check is current state");
+
+    @Override
+    public  boolean inCurrentState() {
+        Log.w(TAG, "check is current state");
 
         AccessibilityNodeInfo nodeInfo = getStateContext().getService().getRootInActiveWindow();
         if(nodeInfo == null) {
-            Log.w("NewsMainState", "rootWindow为空");
+            Log.w(TAG, "rootWindow为空");
             return false;
         }
 
@@ -34,59 +43,39 @@ public class NewsMainState extends State {
 
         targetNode = AccessibilityHelper.findNodeInfosByText(nodeInfo, "发送");
         if(targetNode != null) {
-            Log.w("NewsMainState", "is current state");
+            Log.w(TAG, "is current state");
             return true;
 
         }
         return false;
     }
-
+/*
     @Override
     public void handleEvent(AccessibilityEvent event) {
-        Log.d("NewsMainState","handle evlent");
+        Log.d(TAG,"handle evlent");
+
+        if (isIntialized)return;
 
         if("com.netease.nr.biz.news.detailpage.NewsPageActivity".equals(event.getClassName()) && event.getText().contains("网易新闻")) {
             Log.w("NewsMainState", "网易新闻");
         }
 
-        if (isCurrentState(event))
+        if (inCurrentState())
         {
             isIntialized=true;
             doJob();
         }
 
-
-/*
-        if("android.widget.TextView".equals(event.getClassName())) {
-            AccessibilityNodeInfo nodeInfo = getStateContext().getService().getRootInActiveWindow();
-            if(nodeInfo == null) {
-                Log.w("NewsMainState", "rootWindow为空");
-                return;
-            }
-
-            AccessibilityNodeInfo targetNode = null;
-
-            targetNode = AccessibilityHelper.findNodeInfosByText(nodeInfo, "热门跟帖");
-            if(targetNode != null) {
-
-                this.getStateContext().SetState(null);
-
-            }
-
-        }
-        */
     }
-
+*/
     @Override
-    public void doJob() {
-        Log.d("NewsMainState","do job");
-
-        if (!isIntialized) return ;
+    public boolean doJob(AccessibilityEvent event) {
+        Log.d(TAG,"do job");
 
         AccessibilityNodeInfo nodeInfo = getStateContext().getService().getRootInActiveWindow();
         if(nodeInfo == null) {
-            Log.w("NewsMainState", "rootWindow为空");
-            return;
+            Log.w(TAG, "rootWindow为空");
+            return false;
         }
 
         AccessibilityNodeInfo targetNode = null;
@@ -94,10 +83,47 @@ public class NewsMainState extends State {
         targetNode = AccessibilityHelper.findNodeInfosById(nodeInfo, "com.netease.newsreader.activity:id/text");
         if(targetNode != null) {
             final AccessibilityNodeInfo n = targetNode;
-            Log.w("NewsMainState", "click more comment"+n.getText());
+            Log.w(TAG, "click more comment"+n.getText());
             AccessibilityHelper.performClick(n);
-            this.getStateContext().SetState(new CommentState(this.getStateContext()));
-
+            return true;
         }
+
+        return false;
+    }
+
+    @Override
+    public boolean checkStatus(AccessibilityEvent event)
+    {
+        return isSwitchToOtherState();
+    }
+
+    public boolean isSwitchToOtherState()
+    {
+        int index=0;
+        for(Class clazz : NEXT_STATES) {
+            try {
+                Object object = clazz.newInstance();
+                if(object instanceof State) {
+                    State ns = (State) object;
+                    ns.setStateContext(this.getStateContext());
+                    if (ns.inCurrentState())
+                    {
+                        break;
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            index++;
+        }
+        if (index>=NEXT_STATES.length)
+        {
+            return false;
+        }
+
+        Log.e(TAG, "准备切换到:"+index);
+
+        return true;
     }
 }

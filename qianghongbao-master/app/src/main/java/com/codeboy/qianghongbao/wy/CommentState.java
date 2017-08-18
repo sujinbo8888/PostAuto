@@ -16,15 +16,23 @@ import com.codeboy.qianghongbao.util.AccessibilityHelper;
 public class CommentState extends State {
 
     private final String TAG=CommentState.class.getName();
-    private boolean isIntialized=false;
 
 
-    public CommentState(IStateContext ctx)
+    private static final Class[] NEXT_STATES= {
+            LoginState.class,
+    };
+
+
+    @Override
+    public Class[] getNextStates()
     {
-        super(ctx);
+        return NEXT_STATES;
     }
 
-    public boolean isCurrentState(AccessibilityEvent event) {
+
+
+    @Override
+    public  boolean inCurrentState() {
         Log.w(TAG, "check is current state");
 
         AccessibilityNodeInfo nodeInfo = getStateContext().getService().getRootInActiveWindow();
@@ -47,7 +55,7 @@ public class CommentState extends State {
 
 
     public boolean isLoginPage(AccessibilityEvent event) {
-        Log.w(TAG, "check is current state");
+        Log.w(TAG, "check is  state");
 
         AccessibilityNodeInfo nodeInfo = getStateContext().getService().getRootInActiveWindow();
         if(nodeInfo == null) {
@@ -65,6 +73,7 @@ public class CommentState extends State {
         }
         return false;
     }
+    /*
 
     @Override
     public void handleEvent(AccessibilityEvent event) {
@@ -91,28 +100,26 @@ public class CommentState extends State {
 
         }
 
-        if (isLoginPage(event))
+        if (!logined && isLoginPage(event))
         {
             postLogin();
+            logined=true;
         }
 
 
     }
+    */
 
     @Override
-    public void doJob() {
+    public boolean doJob(AccessibilityEvent event) {
         Log.d(TAG,"do job");
-
-        if (!isIntialized) return ;
-
-
-        postComment();
+        return postComment();
     }
 
     public void postLogin() {
         Log.d(TAG,"postlogin");
 
-        if (!isIntialized) return ;
+       // if (!isIntialized) return ;
 
 
         AccessibilityNodeInfo nodeInfo = getStateContext().getService().getRootInActiveWindow();
@@ -130,24 +137,24 @@ public class CommentState extends State {
             AccessibilityNodeInfo pswNode = AccessibilityHelper.findNodeInfosById(nodeInfo, "com.netease.newsreader.activity:id/login_password");
             AccessibilityNodeInfo loginButtonNode = AccessibilityHelper.findNodeInfosById(nodeInfo, "com.netease.newsreader.activity:id/do_login_button");
 
-            AccessibilityHelper.performSetTextPast(this.getStateContext().getService(),idNode,"sujinbo8888@163.com");
-            AccessibilityHelper.performSetTextPast(this.getStateContext().getService(),pswNode,"sjbeffort8888");
+            //AccessibilityHelper.performSetTextPast(this.getStateContext().getService(),idNode,"sujinbo8888@163.com");
+            //AccessibilityHelper.performSetTextPast(this.getStateContext().getService(),pswNode,"sjbeffort8888");
+            AccessibilityHelper.performSetText(idNode,"sujinbo8888@163.com");
+            AccessibilityHelper.performSetText(pswNode,"sjbeffort8888");
 
             AccessibilityHelper.performClick(loginButtonNode);
 
         }
     }
 
-    public void postComment() {
+    public boolean postComment() {
         Log.d(TAG,"postComment");
-
-        if (!isIntialized) return ;
 
 
         AccessibilityNodeInfo nodeInfo = getStateContext().getService().getRootInActiveWindow();
         if(nodeInfo == null) {
             Log.w(TAG, "rootWindow为空");
-            return;
+            return false;
         }
 
         AccessibilityNodeInfo targetNode = null;
@@ -175,10 +182,54 @@ public class CommentState extends State {
 
                 targetNode = AccessibilityHelper.findNodeInfosById(nodeInfo, "com.netease.newsreader.activity:id/reply");
                 if(targetNode != null) {
-                    AccessibilityHelper.performClick(n);
+                    AccessibilityHelper.performClick(targetNode);
+                    return true;
+                }
+                else
+                {
+                    Log.w(TAG, "发送按钮没找到");
+
                 }
             }
 
         }
+        return false;
     }
+
+    @Override
+    public boolean checkStatus(AccessibilityEvent event)
+    {
+        return isSwitchToOtherState();
+    }
+
+    public boolean isSwitchToOtherState()
+    {
+        int index=0;
+        for(Class clazz : NEXT_STATES) {
+            try {
+                Object object = clazz.newInstance();
+                if(object instanceof State) {
+                    State ns = (State) object;
+                    ns.setStateContext(this.getStateContext());
+                    if (ns.inCurrentState())
+                    {
+                        break;
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            index++;
+        }
+        if (index>=NEXT_STATES.length)
+        {
+            return false;
+        }
+
+        Log.e(TAG, "准备切换到:"+index);
+
+        return true;
+    }
+
 }

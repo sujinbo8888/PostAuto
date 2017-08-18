@@ -144,16 +144,19 @@ public final class AccessibilityHelper {
         }
     }
 
-    /** 点击事件*/
+    /** 这个必须是android21,android5.0以上版本才行*/
     public static void performSetText(AccessibilityNodeInfo nodeInfo,String text) {
         if(nodeInfo == null) {
             return;
         }
 
+        if (nodeInfo != null & nodeInfo.getClassName().equals("android.widget.EditText")) {
             Bundle arguments = new Bundle();
             arguments.putCharSequence(AccessibilityNodeInfo
                     .ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
             nodeInfo.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
+        }
+
 
     }
 
