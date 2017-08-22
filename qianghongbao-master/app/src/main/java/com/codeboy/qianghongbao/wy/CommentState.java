@@ -11,6 +11,7 @@ import com.codeboy.qianghongbao.util.AccessibilityHelper;
 
 /**
  * Created by sjb on 2017/7/26.
+ *
  */
 
 public class CommentState extends State {
